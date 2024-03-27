@@ -1,0 +1,36 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    --r: #ff0000;
+    --o: #ff6000;
+    --y: #ffff00;
+    --g: #00ff00;
+    --c: #00f0ff;
+    --b: #0000ff;
+    --v: #a600ff;
+}
+
+div[id="canvasBox"] {
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(90deg, var(--r), var(--o), var(--y), var(--g), var(--c), var(--b), var(--v));
+}
+
+canvas {
+    border: 2px solid white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    background-color: lime;
+    z-index: 1;
+}
+
+label {
+    position: relative;
+    display: inline-block;
+    z-index: 10 ;
+    min-width: 2px;
+    background-color: wheat;
+}
