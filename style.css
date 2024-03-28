@@ -11,7 +11,7 @@
     --v: #a600ff;
 }
 
-div[id="canvasBox"] {
+div[id = "canvasBox"] {
     width: 100vw;
     height: 100vh;
     background: linear-gradient(90deg, var(--r), var(--o), var(--y), var(--g), var(--c), var(--b), var(--v));

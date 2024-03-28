@@ -1,24 +1,25 @@
 class Player {
-    constructor(color ="red", 
-                size = 20, //raio
-                position = {x:0,y:0}, 
-                speed = {x:0, y:0},
-                direction = 0, //Stop 0, up 1, left 2, down 3, right 4
-                controls = [], //Up, Left, Down, Right, Dash
-                screen = {x:0, y:0}
-        ) {
+    constructor(origin = {
+			color:'red',
+			size:20,
+			position:{x:0,y:0}, 
+            speed:{x:0, y:0},
+            direction:0, //Stop 0, up 1, left 2, down 3, right 4
+            controls:[], //Up, Left, Down, Right, Dash
+            screen:{x:0, y:0, ctx: esc}
+		}){
+			
+		this.screen = origin.screen;
 
-        this.color = color;
-        this.size = size;
-        this.position = position;
-        this.speed = speed;
-        this.direction = direction;
-        this.controls = controls;
+        this.color = origin.color;
+        this.size = origin.size;
+        this.position = origin.position;
+        this.speed = origin.speed;
+        this.direction = origin.direction;
+        this.controls = origin.controls;
 
-        this.rightArm = new Arm(color, size*0.3, 1, screen);
-        this.leftArm = new Arm(color, size*0.3, -1, screen);
-
-        this.screen = screen;
+        this.rightArm = new Arm(this.color, this.size*0.3, 1, this.screen);
+        this.leftArm = new Arm(this.color, this.size*0.3, -1, this.screen);
 
         this.step = {
             states: 8,
@@ -28,34 +29,6 @@ class Player {
 
         this.isCollided = false;
         this.offScreen = false;
-    }
-
-    draw(ctx, respawn = true, nX = this.position.x, nY = this.position.y) {
-        ctx.beginPath();
-        ctx.fillStyle = this.isCollidedd? "white" : this.color;
-        ctx.arc(nX, nY, this.size, 0, Math.PI*2);
-        ctx.fill();
-        ctx.closePath();
-
-        if (this.direction > 0) {
-            let animX = this.direction%2==0? this.step.now*1.3:0;
-            let animY = this.direction%2==1? this.step.now*1.3:0;
-
-            //Right arm
-            this.rightArm.update(this.position, this.direction, animX, animY);
-            this.rightArm.draw(ctx);
-    
-            //Left arm
-            this.leftArm.update(this.position, this.direction, animX, animY);
-            this.leftArm.draw(ctx);
-        }
-
-        if (this.offScreen && respawn) {
-            this.draw(ctx, false, this.position.x+this.screen.x, this.position.y);
-            this.draw(ctx, false, this.position.x-this.screen.x, this.position.y);
-            this.draw(ctx, false, this.position.x, this.position.y+this.screen.y);
-            this.draw(ctx, false, this.position.x, this.position.y-this.screen.y);
-        }
     }
 
     control(playerIn = []) {
@@ -82,6 +55,8 @@ class Player {
         if (Math.abs(this.step.now) > (this.step.states-1)) {
             this.step.gain *= -1;
         }
+
+		this.update();
     }
 
     update() {
@@ -99,7 +74,28 @@ class Player {
 
         this.offScreen = (((this.position.x-this.size<0) || (this.position.x+this.size>this.screen.x)) ||
                           ((this.position.y-this.size<0) || (this.position.y+this.size>this.screen.y)))? 
-        true:false;
+        true : false;
+    }
+	
+	draw() {
+        this.screen.ctx.beginPath();
+        this.screen.ctx.fillStyle = this.isCollidedd? "white" : this.color;
+        this.screen.ctx.arc(this.position.x, this.position.y, this.size, 0, Math.PI*2);
+        this.screen.ctx.fill();
+        this.screen.ctx.closePath();
+
+        if (this.direction > 0) {
+            let animX = this.direction%2==0? this.step.now*1.3:0;
+            let animY = this.direction%2==1? this.step.now*1.3:0;
+
+            //Right arm
+            this.rightArm.update(this.position, this.direction, animX, animY);
+            this.rightArm.draw();
+    
+            //Left arm
+            this.leftArm.update(this.position, this.direction, animX, animY);
+            this.leftArm.draw();
+        }
     }
 }
 
@@ -132,11 +128,11 @@ class Arm {
         true:false;
     }
 
-    draw(ctx) {
-        ctx.beginPath();
-        ctx.fillStyle = this.color;
-        ctx.arc(this.position.x,this.position.y,this.size, 0, Math.PI*2);
-        ctx.fill();
-        ctx.closePath();
+    draw() {
+        this.screen.ctx.beginPath();
+        this.screen.ctx.fillStyle = this.color;
+        this.screen.ctx.arc(this.position.x,this.position.y,this.size, 0, Math.PI*2);
+        this.screen.ctx.fill();
+        this.screen.ctx.closePath();
     }
 }
