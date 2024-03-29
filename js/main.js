@@ -15,36 +15,79 @@ let inputs;
 
 //Player 1
 const p1 = new Player({
-    color:'red',
+    color:'rgb(255,255,50)',
+	deathColor:'rgb(150,150,50)',
     size:20,
     position:{x:300, y:300},
     speed:{x:0, y:0},
+	maxSpeed:{x:5, y:5},
     direction:0,
     controls:["w", "a", "s", "d"],
     screen:{x:widthScreen, y:heightScreen, ctx: esc}
 });
 
 //Enemies
-const runner = new Runner({
-    color:'white',
+const r1 = new Runner({
+    color:'rgb(0,250,0)',
     size:20,
     position:{x:800, y:400},
     speed:{x:0, y:0},
+	maxSpeed:{x:7, y:7},
     direction:0,
     screen:{x:widthScreen, y:heightScreen, ctx: esc},
-	target: p1
+	target: [p1]
 });
+const r2 = new Runner({
+    color:'rgb(250,0,0)',
+    size:20,
+    position:{x:800, y:400},
+    speed:{x:0, y:0},
+	maxSpeed:{x:2, y:2},
+    direction:0,
+    screen:{x:widthScreen, y:heightScreen, ctx: esc},
+	target: [p1]
+});
+const r3 = new Runner({
+    color:'rgb(0,0,250)',
+    size:20,
+    position:{x:800, y:400},
+    speed:{x:0, y:0},
+	maxSpeed:{x:4, y:4},
+    direction:0,
+    screen:{x:widthScreen, y:heightScreen, ctx: esc},
+	target: [p1]
+});
+
+const t = {
+	s0: new Date().getTime(),
+	s1: 0,
+	sD: 0
+}
 
 requestAnimationFrame(fps);
 function fps() {
+	//Update timer
+	t.s1 = new Date().getTime();
+	t.sD = t.s1 - t.s0;
+	t.s0 = t.s1;
+	
 	//ClearScreen and update inputs
     clearScreen();
     inputs = controller.getInputs();
     requestAnimationFrame(fps);
 	
 	//Update runner
-	runner.targetLine();
-	runner.draw();
+	r1.search(t.sD);
+	r1.targetLine(devMode);
+	r1.draw();
+	
+	r2.search(t.sD);
+	r2.targetLine(devMode);
+	r2.draw();
+	
+	r3.search(t.sD);
+	r3.targetLine(devMode);
+	r3.draw();
 	
 	//Update Player
     p1.control(inputs);

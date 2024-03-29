@@ -1,20 +1,24 @@
 class Player {
     constructor(origin = {
-			color:'red',
+			color:'gold',
+			deathColor:'goldenrod',
 			size:20,
 			position:{x:0,y:0}, 
             speed:{x:0, y:0},
+			maxSpeed:{x:5, y:5},
             direction:0, //Stop 0, up 1, left 2, down 3, right 4
             controls:[], //Up, Left, Down, Right, Dash
             screen:{x:0, y:0, ctx: esc}
 		}){
 			
 		this.screen = origin.screen;
-
+		
         this.color = origin.color;
+		this.deathColor = origin.deathColor;
         this.size = origin.size;
         this.position = origin.position;
         this.speed = origin.speed;
+		this.maxSpeed = origin.maxSpeed;
         this.direction = origin.direction;
         this.controls = origin.controls;
 
@@ -30,41 +34,60 @@ class Player {
         this.isCollided = false;
         this.offScreen = false;
     }
+	
+	collided(tgt) {
+		const distance = (((((this.position.x-tgt.position.x)**2)+((this.position.y-tgt.position.y)**2))**0.5));
+		const check = this.isCollided = (distance < this.size+tgt.size);
+		tgt.isCollided = check || (tgt.isCollided);
+		return check;
+	}
 
     control(playerIn = []) {
         this.step.now += this.step.gain;
-        if (playerIn.includes(this.controls[0])) {
-            //Up
-            this.direction = 1;
-        } else if (playerIn.includes(this.controls[1])) {
-            //Left
-            this.direction = 2;
-        } else if (playerIn.includes(this.controls[2])) {
-            //Down
-            this.direction = 3;
-        } else if (playerIn.includes(this.controls[3])) {
-            //Right
-            this.direction = 4;
-        } else {
-            //Stopped
-            this.direction = 0;
-            this.step.now = 0;
-            this.step.gain = 1;
-        }
+		if (!this.isCollided) {
+			if (playerIn.includes(this.controls[0])) {
+				//Up
+				this.direction = 1;
+			} else if (playerIn.includes(this.controls[1])) {
+				//Left
+				this.direction = 2;
+			} else if (playerIn.includes(this.controls[2])) {
+				//Down
+				this.direction = 3;
+			} else if (playerIn.includes(this.controls[3])) {
+				//Right
+				this.direction = 4;
+			} else {
+				//Stopped
+				this.direction = 0;
+				this.step.now = 0;
+				this.step.gain = 1;
+			}
+		} else {
+			//Stopped
+			this.direction = 0;
+			this.step.now = 0;
+			this.step.gain = 1;
+		}
+        
 
         if (Math.abs(this.step.now) > (this.step.states-1)) {
             this.step.gain *= -1;
         }
 
 		this.update();
+		
+		if (this.isCollided) {
+			this.color = this.deathColor;
+		}
     }
 
     update() {
         this.speed.x = 0;
-        this.speed.x = this.direction%2==0 && this.direction>0? this.direction>3? 5: -5: 0;
+        this.speed.x = this.direction%2==0 && this.direction>0? this.direction>3? this.maxSpeed.x: -this.maxSpeed.x: 0;
 
         this.speed.y = 0;
-        this.speed.y = this.direction%2==1? this.direction>2? 5: -5: 0;
+        this.speed.y = this.direction%2==1? this.direction>2? this.maxSpeed.y: -this.maxSpeed.y: 0;
 
         this.position.x += this.speed.x;
         this.position.y += this.speed.y;
