@@ -13,6 +13,15 @@ const devMode = true;
 const controller = new Controller();
 let inputs;
 
+//Timer
+const t = {
+	sInicial: new Date().getTime(),
+	sFinal: 0,
+	sDif: 0,
+	start: new Date().getTime(),
+	now: 0
+}
+
 //Player 1
 const p1 = new Player({
     color:'rgb(255,255,50)',
@@ -23,83 +32,69 @@ const p1 = new Player({
 	maxSpeed:{x:5, y:5},
     direction:0,
     controls:["w", "a", "s", "d"],
-    screen:{x:widthScreen, y:heightScreen, ctx: esc}
+    screen:{x:widthScreen, y:heightScreen, ctx: esc, tag:'player'}
 });
 
 //Enemies
 const r1 = new Runner({
     color:'rgb(0,250,0)',
     size:20,
-    position:{x:800, y:400},
+    position:{x:900, y:400},
     speed:{x:0, y:0},
 	maxSpeed:{x:7, y:7},
     direction:0,
-    screen:{x:widthScreen, y:heightScreen, ctx: esc},
+    screen:{x:widthScreen, y:heightScreen, ctx: esc, tag:'enemy'},
 	target: [p1]
 });
-const r2 = new Runner({
-    color:'rgb(250,0,0)',
-    size:20,
-    position:{x:800, y:400},
-    speed:{x:0, y:0},
-	maxSpeed:{x:2, y:2},
-    direction:0,
-    screen:{x:widthScreen, y:heightScreen, ctx: esc},
-	target: [p1]
-});
-const r3 = new Runner({
-    color:'rgb(0,0,250)',
-    size:20,
-    position:{x:800, y:400},
-    speed:{x:0, y:0},
-	maxSpeed:{x:4, y:4},
-    direction:0,
-    screen:{x:widthScreen, y:heightScreen, ctx: esc},
-	target: [p1]
-});
+r1.kill();
 
-const t = {
-	s0: new Date().getTime(),
-	s1: 0,
-	sD: 0
-}
+const s1 = new Shooter({
+    color:'rgb(0,200,200)',
+    size:20,
+    position:{x:800, y:400},
+    speed:{x:0, y:0},
+	maxSpeed:{x:5, y:5},
+    direction:0,
+    screen:{x:widthScreen, y:heightScreen, ctx: esc, tag:'enemy'},
+	target: [p1],
+	shot: {cooldown:2000, time:0, shots:[], max:3, can:true}
+});
+//s1.kill();
 
 requestAnimationFrame(fps);
 function fps() {
 	//Update timer
-	t.s1 = new Date().getTime();
-	t.sD = t.s1 - t.s0;
-	t.s0 = t.s1;
+	t.sFinal = new Date().getTime();
+	t.sDif = t.sFinal - t.sInicial;
+	t.sInicial = t.sFinal;
+	t.now = t.sFinal-t.start;
 	
 	//ClearScreen and update inputs
     clearScreen();
     inputs = controller.getInputs();
     requestAnimationFrame(fps);
 	
-	//Update runner
-	r1.search(t.sD);
+	//Update enemies 
+	r1.search(t.sDif);
 	r1.targetLine(devMode);
 	r1.draw();
 	
-	r2.search(t.sD);
-	r2.targetLine(devMode);
-	r2.draw();
-	
-	r3.search(t.sD);
-	r3.targetLine(devMode);
-	r3.draw();
+	s1.search(t.sDif)
+	s1.targetLine(devMode);
+	s1.draw();
 	
 	//Update Player
     p1.control(inputs);
     p1.draw(esc);
 	
     document.getElementById('body').innerHTML = `BD:${p1.offScreen}`;
+    document.getElementById('timer').innerHTML = `Timer:${Math.round((t.now)/100)}`;
 }
 
 function clearScreen(color = "black") {
     esc.fillStyle = color;
     esc.fillRect(0, 0, widthScreen, heightScreen);
-
+	
     if(devMode) {
         for(let y = 0; y*pixelSize < heightScreen; y++) {
             for(let x = 0; x*pixelSize < widthScreen; x++) {

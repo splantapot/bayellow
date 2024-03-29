@@ -7,16 +7,35 @@ class Runner extends Player {
 		this.delay = 0;
 	}
 	
+	selectTarget() {
+		let distance = Infinity;
+		let nID = 0;
+		this.allTargets.forEach((tg, tgIx) => {
+			const nD = distancePoints(this.position.x, this.position.y, tg.position.x, tg.position.y)
+			if (distance >= nD) {
+				distance = nD;
+				nID = tgIx;
+			}
+		});
+		this.target = this.allTargets[nID];
+	}
+	
+	kill() {
+		this.isLive = false;
+	}
+	
 	search(time) {
-		this.target = this.allTargets[rngNum(this.allTargets.length)]
-		if (this.target != undefined && this.target.isCollided) {
+		this.selectTarget();
+		
+		if (this.target != undefined && !this.target.isLive) {
 			this.allTargets.splice(this.allTargets.indexOf(this.target), 1);
-			this.target = this.allTargets[rngNum(this.allTargets.length)]
+			this.selectTarget();
 		}
 		
-		if (this.target == undefined) {
+		if (this.target == undefined || !this.isLive) {
 			this.target = this;
 			this.direction = 0;
+			this.kill();
 		} else {
 			this.step.now += this.step.gain;
 		
@@ -47,15 +66,15 @@ class Runner extends Player {
 			if (Math.abs(this.step.now) > (this.step.states-1)) {
 				this.step.gain *= -1;
 			}
+			
+			this.target.collided(this);
+			this.update();
 		}
-		
-		this.collided(this.target);
-		this.update();
 	}
 	
 	targetLine(deving) {
-		if (deving) {
-			let pos = 0;
+		if (deving && this.isLive) {
+			let pos = 0, posX = 0, posY = 0, ang = 0;
 			this.screen.ctx.font = "15px Arial";
 			this.screen.ctx.textAlign = "center";
 			//Em linha reta
@@ -65,8 +84,8 @@ class Runner extends Player {
 			this.screen.ctx.lineTo(this.target.position.x, this.target.position.y);
 			this.screen.ctx.stroke();
 			this.screen.ctx.closePath();
-			pos = (((((this.position.x-this.target.position.x)**2)+((this.position.y-this.target.position.y)**2))**0.5));
-			pos = Math.round(pos)*Math.sign(pos);
+			pos = distancePoints(this.position.x, this.position.y, this.target.position.x, this.target.position.y);
+			pos = Math.round(pos);
 			this.screen.ctx.fillText(
 				`${(pos)}`, 
 				this.position.x-(this.size*Math.sign(this.position.x-this.size-this.target.position.x-this.target.size)),
@@ -79,8 +98,8 @@ class Runner extends Player {
 			this.screen.ctx.lineTo(this.target.position.x, this.position.y);
 			this.screen.ctx.stroke();
 			this.screen.ctx.closePath();
-			pos = this.position.y-this.target.position.y;
-			this.screen.ctx.fillText(`${Math.abs(pos)}`, this.target.position.x-this.size, this.position.y-(this.size*Math.sign(pos)));
+			posY = this.position.y-this.target.position.y;
+			this.screen.ctx.fillText(`${Math.abs(posY)}`, this.target.position.x-this.size, this.position.y-(this.size*Math.sign(posY)));
 			//Para x
 			this.screen.ctx.beginPath();
 			this.screen.ctx.strokeStyle = this.screen.ctx.fillStyle = 'rgb(0,150,255)';
@@ -88,8 +107,20 @@ class Runner extends Player {
 			this.screen.ctx.lineTo(this.position.x, this.position.y);
 			this.screen.ctx.stroke();
 			this.screen.ctx.closePath();
-			pos = this.position.x-this.target.position.x;
-			this.screen.ctx.fillText(`${Math.abs(pos)}`, this.position.x-((this.size+10)*Math.sign(pos)), this.position.y+this.size)
+			posX = this.position.x-this.target.position.x;
+			this.screen.ctx.fillText(`${Math.abs(posX)}`, this.position.x-((this.size+10)*Math.sign(posX)), this.position.y+this.size);
+			//Para ang
+			this.screen.ctx.beginPath();
+			this.screen.ctx.strokeStyle = this.screen.ctx.fillStyle = 'rgb(0,250,0)'
+			ang = Math.atan(posY/posX);
+			this.screen.ctx.arc(this.position.x, this.position.y, (Number(this.size<Math.abs(posX))*this.size)+15,
+				(Math.sign(posX)*Math.PI*0.5)+(Math.PI*0.5),
+				(Math.sign(posX)*Math.PI*0.5)+(Math.PI*0.5)+ang,
+				(ang>0? false: true)
+			);
+			this.screen.ctx.stroke();
+			this.screen.ctx.closePath();
+			this.screen.ctx.fillText(`${Math.round(toDeg(ang))}`, this.position.x-((this.size*3)*Math.sign(posX)), this.position.y-(this.size*Math.sign(posY)))
 		}
 	}
 }

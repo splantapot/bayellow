@@ -8,7 +8,7 @@ class Player {
 			maxSpeed:{x:5, y:5},
             direction:0, //Stop 0, up 1, left 2, down 3, right 4
             controls:[], //Up, Left, Down, Right, Dash
-            screen:{x:0, y:0, ctx: esc}
+            screen:{x:0, y:0, ctx: esc, tag:'player'}
 		}){
 			
 		this.screen = origin.screen;
@@ -33,18 +33,19 @@ class Player {
 
         this.isCollided = false;
         this.offScreen = false;
+		this.isLive = true;
     }
 	
 	collided(tgt) {
 		const distance = (((((this.position.x-tgt.position.x)**2)+((this.position.y-tgt.position.y)**2))**0.5));
-		const check = this.isCollided = (distance < this.size+tgt.size);
-		tgt.isCollided = check || (tgt.isCollided);
+		const check = this.isCollided = tgt.isCollided = (distance < this.size+tgt.size);
+		this.isLive = !this.isCollided;
 		return check;
 	}
 
     control(playerIn = []) {
         this.step.now += this.step.gain;
-		if (!this.isCollided) {
+		if (this.isLive) {
 			if (playerIn.includes(this.controls[0])) {
 				//Up
 				this.direction = 1;
@@ -76,49 +77,62 @@ class Player {
         }
 
 		this.update();
-		
-		if (this.isCollided) {
-			this.color = this.deathColor;
-		}
     }
 
     update() {
-        this.speed.x = 0;
-        this.speed.x = this.direction%2==0 && this.direction>0? this.direction>3? this.maxSpeed.x: -this.maxSpeed.x: 0;
+		if (this.isLive) {
+			this.speed.x = 0;
+			this.speed.x = this.direction%2==0 && this.direction>0? this.direction>3? this.maxSpeed.x: -this.maxSpeed.x: 0;
 
-        this.speed.y = 0;
-        this.speed.y = this.direction%2==1? this.direction>2? this.maxSpeed.y: -this.maxSpeed.y: 0;
+			this.speed.y = 0;
+			this.speed.y = this.direction%2==1? this.direction>2? this.maxSpeed.y: -this.maxSpeed.y: 0;
 
-        this.position.x += this.speed.x;
-        this.position.y += this.speed.y;
+			this.position.x += this.speed.x;
+			this.position.y += this.speed.y;
 
-        this.position.x += this.position.x<0||this.position.x>this.screen.x? this.screen.x*Math.sign((this.position.x%this.screen.x))*-1: 0;
-        this.position.y += this.position.y<0||this.position.y>this.screen.y? this.screen.y*Math.sign((this.position.y%this.screen.y))*-1: 0;
+			this.position.x += this.position.x<0||this.position.x>this.screen.x? this.screen.x*Math.sign((this.position.x%this.screen.x))*-1: 0;
+			this.position.y += this.position.y<0||this.position.y>this.screen.y? this.screen.y*Math.sign((this.position.y%this.screen.y))*-1: 0;
 
-        this.offScreen = (((this.position.x-this.size<0) || (this.position.x+this.size>this.screen.x)) ||
-                          ((this.position.y-this.size<0) || (this.position.y+this.size>this.screen.y)))? 
-        true : false;
+			this.offScreen = (((this.position.x-this.size<0) || (this.position.x+this.size>this.screen.x)) ||
+							  ((this.position.y-this.size<0) || (this.position.y+this.size>this.screen.y)))? 
+			true : false;
+		}
     }
 	
 	draw() {
-        this.screen.ctx.beginPath();
-        this.screen.ctx.fillStyle = this.isCollidedd? "white" : this.color;
-        this.screen.ctx.arc(this.position.x, this.position.y, this.size, 0, Math.PI*2);
-        this.screen.ctx.fill();
-        this.screen.ctx.closePath();
+		if ((this.screen.tag == 'player') || (this.screen.tag=='enemy' && this.isLive)) {
+			//Spawn Player
+			this.screen.ctx.beginPath();
+			this.screen.ctx.fillStyle = this.isLive? this.color : this.deathColor;
+			this.screen.ctx.arc(this.position.x, this.position.y, this.size, 0, Math.PI*2);
+			this.screen.ctx.fill();
+			this.screen.ctx.closePath();
+			
+			//Spawn Player Vision
+			this.screen.ctx.fillStyle = this.screen.ctx.fillStyle+'33';
+			this.screen.ctx.beginPath();
+			const cond = Number(!!(!(this.direction%2) && this.direction))
+			this.screen.ctx.arc(
+				this.position.x+(Number(!!(!(this.direction%2) && this.direction))*0.5*this.size*(Math.sign(this.direction-3))),
+				this.position.y+(Number(!!((this.direction%2) && this.direction))*0.5*this.size*(Math.sign(this.direction-2))),
+				this.size, 0, Math.PI*2
+			);
+			this.screen.ctx.fill();
+			this.screen.ctx.closePath();
 
-        if (this.direction > 0) {
-            let animX = this.direction%2==0? this.step.now*1.3:0;
-            let animY = this.direction%2==1? this.step.now*1.3:0;
+			if (this.direction > 0) {
+				let animX = this.direction%2==0? this.step.now*1.3:0;
+				let animY = this.direction%2==1? this.step.now*1.3:0;
 
-            //Right arm
-            this.rightArm.update(this.position, this.direction, animX, animY);
-            this.rightArm.draw();
-    
-            //Left arm
-            this.leftArm.update(this.position, this.direction, animX, animY);
-            this.leftArm.draw();
-        }
+				//Right arm
+				this.rightArm.update(this.position, this.direction, animX, animY);
+				this.rightArm.draw();
+		
+				//Left arm
+				this.leftArm.update(this.position, this.direction, animX, animY);
+				this.leftArm.draw();
+			}
+		}
     }
 }
 
