@@ -2,9 +2,12 @@ class Runner extends Player {
 	constructor(main) {
 		super(main);
 		delete this.controls;
+		//target
+		//delay:{now:0,max:0}
 		this.allTargets = main.target;
 		this.target = this.allTargets[rngNum(this.allTargets.length)]
-		this.delay = 0;
+		this.delay = main.delay;
+		
 	}
 	
 	selectTarget() {
@@ -25,8 +28,8 @@ class Runner extends Player {
 	}
 	
 	search(time) {
+		//Select target
 		this.selectTarget();
-		
 		if (this.target != undefined && !this.target.isLive) {
 			this.allTargets.splice(this.allTargets.indexOf(this.target), 1);
 			this.selectTarget();
@@ -37,26 +40,27 @@ class Runner extends Player {
 			this.direction = 0;
 			this.kill();
 		} else {
+			//Movement
+			this.delay.now += time;
 			this.step.now += this.step.gain;
-		
-			this.delay = this.delay <= 1100? this.delay+time:0;
-			const canChangeDir = this.delay >= 800;
 			
-			const dX = Math.abs(this.position.x-this.target.position.x);
-			const dY = Math.abs(this.position.y-this.target.position.y);
-
-			const isLeft = (this.position.x > this.target.position.x);
-			const isUp = (this.position.y > this.target.position.y);
+			let pos = 0, posX = 0, posY = 0;
+			pos = distancePoints(this.position.x, this.position.y, this.target.position.x, this.target.position.y);
+			posY = this.target.position.y-this.position.y;
+			posX = this.target.position.x-this.position.x;
 			
-			if (canChangeDir) {
-				if (dX > dY) {
-					this.direction = 4-(Number(isLeft)*2);
-				} else if (dY < dX) {
-					this.direction = 3-(Number(isUp)*2);
+			if (this.delay.now > this.delay.max*0.026*this.maxSpeed) {
+				if (Math.abs(posX) > Math.abs(posY)) {
+					this.direction = posX<0? 2 : 4;
+				} else if (Math.abs(posY) > Math.abs(posX)) {
+					this.direction = posY<0? 1 : 3;
 				} else {
-					this.direction = rngNum(2)? 4-(Number(isLeft)*2) : 3-(Number(isUp)*2);
+					const toAdd = [posX<0? 2: 4, posY<0? 1: 3]
+					this.direction = toAdd[rngNum(2)];
 				}
+				this.delay.now = 0;
 			}
+			
 			
 			if (!this.direction) {
 				this.step.now = 0;
@@ -67,6 +71,7 @@ class Runner extends Player {
 				this.step.gain *= -1;
 			}
 			
+			//Player Check collision
 			this.target.collided(this);
 			this.update();
 		}
@@ -88,8 +93,8 @@ class Runner extends Player {
 			pos = Math.round(pos);
 			this.screen.ctx.fillText(
 				`${(pos)}`, 
-				this.position.x-(this.size*Math.sign(this.position.x-this.size-this.target.position.x-this.target.size)),
-				this.position.y-((this.size+15)*Math.sign(this.position.y-this.size-this.target.position.y-this.target.size))
+				this.target.position.x-this.target.size-15,
+				this.target.position.y+this.target.size
 			);
 			//Para y
 			this.screen.ctx.beginPath();
@@ -98,8 +103,8 @@ class Runner extends Player {
 			this.screen.ctx.lineTo(this.target.position.x, this.position.y);
 			this.screen.ctx.stroke();
 			this.screen.ctx.closePath();
-			posY = this.position.y-this.target.position.y;
-			this.screen.ctx.fillText(`${Math.abs(posY)}`, this.target.position.x-this.size, this.position.y-(this.size*Math.sign(posY)));
+			posY = Math.abs(this.position.y-this.target.position.y);
+			this.screen.ctx.fillText(`${(posY)}`, this.target.position.x-this.size, this.position.y-this.size);
 			//Para x
 			this.screen.ctx.beginPath();
 			this.screen.ctx.strokeStyle = this.screen.ctx.fillStyle = 'rgb(0,150,255)';
@@ -107,20 +112,8 @@ class Runner extends Player {
 			this.screen.ctx.lineTo(this.position.x, this.position.y);
 			this.screen.ctx.stroke();
 			this.screen.ctx.closePath();
-			posX = this.position.x-this.target.position.x;
-			this.screen.ctx.fillText(`${Math.abs(posX)}`, this.position.x-((this.size+10)*Math.sign(posX)), this.position.y+this.size);
-			//Para ang
-			this.screen.ctx.beginPath();
-			this.screen.ctx.strokeStyle = this.screen.ctx.fillStyle = 'rgb(0,250,0)'
-			ang = Math.atan(posY/posX);
-			this.screen.ctx.arc(this.position.x, this.position.y, (Number(this.size<Math.abs(posX))*this.size)+15,
-				(Math.sign(posX)*Math.PI*0.5)+(Math.PI*0.5),
-				(Math.sign(posX)*Math.PI*0.5)+(Math.PI*0.5)+ang,
-				(ang>0? false: true)
-			);
-			this.screen.ctx.stroke();
-			this.screen.ctx.closePath();
-			this.screen.ctx.fillText(`${Math.round(toDeg(ang))}`, this.position.x-((this.size*3)*Math.sign(posX)), this.position.y-(this.size*Math.sign(posY)))
+			posX = Math.abs(this.position.x-this.target.position.x);
+			this.screen.ctx.fillText(`${(posX)}`, this.target.position.x, this.position.y+this.size);
 		}
 	}
 }

@@ -5,7 +5,7 @@ class Player {
 			size:20,
 			position:{x:0,y:0}, 
             speed:{x:0, y:0},
-			maxSpeed:{x:5, y:5},
+			maxSpeed:5,
             direction:0, //Stop 0, up 1, left 2, down 3, right 4
             controls:[], //Up, Left, Down, Right, Dash
             screen:{x:0, y:0, ctx: esc, tag:'player'}
@@ -82,10 +82,10 @@ class Player {
     update() {
 		if (this.isLive) {
 			this.speed.x = 0;
-			this.speed.x = this.direction%2==0 && this.direction>0? this.direction>3? this.maxSpeed.x: -this.maxSpeed.x: 0;
+			this.speed.x = this.direction%2==0 && this.direction>0? this.direction>3? this.maxSpeed: -this.maxSpeed: 0;
 
 			this.speed.y = 0;
-			this.speed.y = this.direction%2==1? this.direction>2? this.maxSpeed.y: -this.maxSpeed.y: 0;
+			this.speed.y = this.direction%2==1? this.direction>2? this.maxSpeed: -this.maxSpeed: 0;
 
 			this.position.x += this.speed.x;
 			this.position.y += this.speed.y;
@@ -109,7 +109,7 @@ class Player {
 			this.screen.ctx.closePath();
 			
 			//Spawn Player Vision
-			this.screen.ctx.fillStyle = this.screen.ctx.fillStyle+'33';
+			this.screen.ctx.fillStyle = this.screen.ctx.fillStyle+'66';
 			this.screen.ctx.beginPath();
 			const cond = Number(!!(!(this.direction%2) && this.direction))
 			this.screen.ctx.arc(

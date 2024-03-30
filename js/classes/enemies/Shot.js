@@ -1,19 +1,13 @@
 class Shot {
-	constructor(origin, size, speed, dir) {
+	constructor(origin) {
 		this.screen = origin.screen;
 		this.color = origin.color;
-		this.size = size;
-		this.speed = speed;
-		
-		this.dir = dir;
-		
-		this.position = /*{
-			x: (origin.position.x)
-			y:origin.position.y
-		}*/
-		
-		origin.position
-		
+		this.size = Math.round(origin.size/2);
+		this.speed = {
+			x: 0,
+			y: 0
+		}
+		this.position = origin.position;
 	}
 	
 	update() {
