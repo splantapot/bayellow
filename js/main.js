@@ -44,7 +44,7 @@ const r1 = new Runner({
 	maxSpeed:7,
     direction:0,
     screen:{x:widthScreen, y:heightScreen, ctx: esc, tag:'enemy'},
-	delay:{now:50000,max:1000},
+	delay:{now:0,max:1000},
 	target: [p1]
 });
 r1.kill();
@@ -58,7 +58,7 @@ const s1 = new Shooter({
     direction:0,
     screen:{x:widthScreen, y:heightScreen, ctx: esc, tag:'enemy'},
 	delay:{now:50000,max:1000},
-	shot: {cooldown:1000, draw:250, time:0, shots:[], max:3, can:true},
+	shot: {cooldown:1000, draw:400, shots:[], max:3},
 	target: [p1]
 });
 //s1.kill();

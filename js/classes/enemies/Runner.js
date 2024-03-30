@@ -7,7 +7,7 @@ class Runner extends Player {
 		this.allTargets = main.target;
 		this.target = this.allTargets[rngNum(this.allTargets.length)]
 		this.delay = main.delay;
-		
+		this.delay.now = Infinity;
 	}
 	
 	selectTarget() {
