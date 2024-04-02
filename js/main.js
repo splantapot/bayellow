@@ -49,14 +49,13 @@ const s1 = new Shooter({
     color:'rgb(0,200,200)',
     size:20,
     position:{x:900, y:400},
-	maxSpeed:1,
+	maxSpeed:4,
     screen:{x:widthScreen, y:heightScreen, ctx: esc, tag:'enemy'},
 	delay:{now:50000,max:1000},
 	shot: {cooldown:200, draw:50, max:10},
 	target: [p1]
 });
 //s1.kill();
-
 
 requestAnimationFrame(fps);
 function fps() {
