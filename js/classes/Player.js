@@ -3,10 +3,8 @@ class Player {
 			color:'gold',
 			deathColor:'goldenrod',
 			size:20,
-			position:{x:0,y:0}, 
-            speed:{x:0, y:0},
+			position:{x:0,y:0},
 			maxSpeed:5,
-            direction:0, //Stop 0, up 1, left 2, down 3, right 4
             controls:[], //Up, Left, Down, Right, Dash
             screen:{x:0, y:0, ctx: esc, tag:'player'}
 		}){
@@ -17,9 +15,9 @@ class Player {
 		this.deathColor = origin.deathColor;
         this.size = origin.size;
         this.position = origin.position;
-        this.speed = origin.speed;
+        this.speed = {x:0, y:0};
 		this.maxSpeed = origin.maxSpeed;
-        this.direction = origin.direction;
+        this.direction = 0, //Stop 0, up 1, left 2, down 3, right 4
         this.controls = origin.controls;
 
         this.rightArm = new Arm(this.color, this.size*0.3, 1, this.screen);
@@ -36,11 +34,23 @@ class Player {
 		this.isLive = true;
     }
 	
-	collided(tgt) {
-		const distance = (((((this.position.x-tgt.position.x)**2)+((this.position.y-tgt.position.y)**2))**0.5));
-		const check = this.isCollided = tgt.isCollided = (distance < this.size+tgt.size);
-		this.isLive = !this.isCollided;
-		return check;
+	collided(tgt, isBullet = false) {
+		
+		if (this.isLive) {
+			if (isBullet) {
+				tgt.position = {
+					x: tgt.x,
+					y: tgt.y
+				}
+			}
+		
+			const distance = (((((this.position.x-tgt.position.x)**2)+((this.position.y-tgt.position.y)**2))**0.5));
+			const check = this.isCollided = tgt.isCollided = (distance < this.size+tgt.size);
+			this.isLive = !this.isCollided;
+		
+			return check;
+		}
+		
 	}
 
     control(playerIn = []) {

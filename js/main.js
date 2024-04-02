@@ -28,9 +28,7 @@ const p1 = new Player({
 	deathColor:'rgb(150,150,50)',
     size:20,
     position:{x:300, y:300},
-    speed:{x:0, y:0},
 	maxSpeed:5,
-    direction:0,
     controls:["w", "a", "s", "d"],
     screen:{x:widthScreen, y:heightScreen, ctx: esc, tag:'player'}
 });
@@ -40,9 +38,7 @@ const r1 = new Runner({
     color:'rgb(0,250,0)',
     size:20,
     position:{x:900, y:400},
-    speed:{x:0, y:0},
 	maxSpeed:7,
-    direction:0,
     screen:{x:widthScreen, y:heightScreen, ctx: esc, tag:'enemy'},
 	delay:{now:0,max:1000},
 	target: [p1]
@@ -53,15 +49,14 @@ const s1 = new Shooter({
     color:'rgb(0,200,200)',
     size:20,
     position:{x:900, y:400},
-    speed:{x:0, y:0},
-	maxSpeed:2,
-    direction:0,
+	maxSpeed:1,
     screen:{x:widthScreen, y:heightScreen, ctx: esc, tag:'enemy'},
 	delay:{now:50000,max:1000},
-	shot: {cooldown:1000, draw:400, shots:[], max:3},
+	shot: {cooldown:200, draw:50, max:10},
 	target: [p1]
 });
 //s1.kill();
+
 
 requestAnimationFrame(fps);
 function fps() {
@@ -85,12 +80,11 @@ function fps() {
 	s1.targetLine(devMode);
 	s1.draw();
 	
-	
 	//Update Player
     p1.control(inputs);
     p1.draw(esc);
 	
-    document.getElementById('body').innerHTML = `BD:${p1.offScreen}`;
+    document.getElementById('body').innerHTML = `BD:${Math.round(s1.shot.time/100)} || ${p1.isLive}`;
     document.getElementById('timer').innerHTML = `Timer:${Math.round((t.now)/100)}`;
 }
 
