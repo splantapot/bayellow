@@ -32,7 +32,7 @@ class Shooter extends Runner {
 				this.shot.dir = this.direction;
 			}
 			
-			if (this.shot.drawTime > this.shot.draw) {
+			if (this.shot.drawTime > this.shot.draw && this.isLive) {
 				console.log('Pow');
 				this.shot.time = 0;
 				this.shot.drawTime = 0;

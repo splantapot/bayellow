@@ -51,11 +51,23 @@ const s1 = new Shooter({
     position:{x:900, y:400},
 	maxSpeed:4,
     screen:{x:widthScreen, y:heightScreen, ctx: esc, tag:'enemy'},
-	delay:{now:50000,max:1000},
-	shot: {cooldown:200, draw:50, max:10},
-	target: [p1]
+	delay:{now:0,max:1000},
+	target: [p1],
+	shot: {cooldown:200, draw:50, max:10}
 });
-//s1.kill();
+// s1.kill();
+
+const b1 = new Bomb({
+    color:'rgb(0,100,200)',
+    size:20,
+    position:{x:900, y:400},
+	maxSpeed:4,
+    screen:{x:widthScreen, y:heightScreen, ctx: esc, tag:'enemy'},
+	delay:{now:0,max:1000},
+	target: [p1],
+	explosion: {range:5, flash:100, end: 2000}
+});
+b1.kill();
 
 requestAnimationFrame(fps);
 function fps() {
@@ -78,6 +90,10 @@ function fps() {
 	s1.search(t.sDif);
 	s1.targetLine(devMode);
 	s1.draw();
+
+    b1.search(t.sDif);
+	b1.targetLine(devMode);
+	b1.draw();
 	
 	//Update Player
     p1.control(inputs);
