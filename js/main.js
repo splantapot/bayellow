@@ -27,9 +27,18 @@ const p1 = new Player({
     color:'rgb(255,255,50)',
 	deathColor:'rgb(150,150,50)',
     size:20,
-    position:{x:300, y:300},
+    position:{x:300, y:350},
 	maxSpeed:5,
     controls:["w", "a", "s", "d"],
+    screen:{x:widthScreen, y:heightScreen, ctx: esc, tag:'player'}
+});
+const p2 = new Player({
+    color:'rgb(0,255,50)',
+	deathColor:'rgb(150,150,50)',
+    size:20,
+    position:{x:300, y:450},
+	maxSpeed:5,
+    controls:["8", "4", "2", "6"],
     screen:{x:widthScreen, y:heightScreen, ctx: esc, tag:'player'}
 });
 
@@ -55,19 +64,19 @@ const s1 = new Shooter({
 	target: [p1],
 	shot: {cooldown:200, draw:50, max:10}
 });
-// s1.kill();
+s1.kill();
 
 const b1 = new Bomb({
     color:'rgb(0,100,200)',
     size:20,
     position:{x:900, y:400},
-	maxSpeed:4,
+	maxSpeed:5,
     screen:{x:widthScreen, y:heightScreen, ctx: esc, tag:'enemy'},
 	delay:{now:0,max:1000},
-	target: [p1],
-	explosion: {range:5, flash:100, end: 2000}
+	target: [p1, p2],
+	explosion: {range:5, flash:500, end: 3000}
 });
-b1.kill();
+//b1.kill();
 
 requestAnimationFrame(fps);
 function fps() {
@@ -98,6 +107,8 @@ function fps() {
 	//Update Player
     p1.control(inputs);
     p1.draw(esc);
+	p2.control(inputs);
+    p2.draw(esc);
 	
     document.getElementById('body').innerHTML = `BD:${Math.round(s1.shot.time/100)} || ${p1.isLive}`;
     document.getElementById('timer').innerHTML = `Timer:${Math.round((t.now)/100)}`;

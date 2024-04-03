@@ -34,7 +34,7 @@ class Player {
 		this.isLive = true;
     }
 	
-	collided(tgt, isBullet = false) {
+	collided(tgt, isBullet = false, updatePlayer = true) {
 		
 		if (this.isLive) {
 			if (isBullet) {
@@ -46,8 +46,9 @@ class Player {
 		
 			const distance = (((((this.position.x-tgt.position.x)**2)+((this.position.y-tgt.position.y)**2))**0.5));
 			const check = this.isCollided = tgt.isCollided = (distance < this.size+tgt.size);
-			this.isLive = !this.isCollided;
-		
+			if (updatePlayer) {
+				this.isLive = !this.isCollided;
+			}
 			return check;
 		}
 		
@@ -175,9 +176,9 @@ class Arm {
         true:false;
     }
 
-    draw() {
+    draw(alternativeColor = this.color) {
         this.screen.ctx.beginPath();
-        this.screen.ctx.fillStyle = this.color;
+        this.screen.ctx.fillStyle = alternativeColor;
         this.screen.ctx.arc(this.position.x,this.position.y,this.size, 0, Math.PI*2);
         this.screen.ctx.fill();
         this.screen.ctx.closePath();

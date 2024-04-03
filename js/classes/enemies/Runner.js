@@ -27,8 +27,11 @@ class Runner extends Player {
 		this.isLive = false;
 	}
 	
-	search(time) {
+	search(time, needSelect = true) {
 		//Select target
+		if (needSelect) {
+
+		}
 		this.selectTarget();
 		if (this.target != undefined && !this.target.isLive) {
 			this.allTargets.splice(this.allTargets.indexOf(this.target), 1);
@@ -72,7 +75,7 @@ class Runner extends Player {
 			}
 			
 			//Player Check collision
-			this.target.collided(this);
+			
 			this.update();
 		}
 	}
