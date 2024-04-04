@@ -23,10 +23,6 @@ class Runner extends Player {
 		this.target = this.allTargets[nID];
 	}
 	
-	kill() {
-		this.isLive = false;
-	}
-	
 	search(time) {
 		//Select target
 		this.selectTarget();

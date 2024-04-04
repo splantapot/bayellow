@@ -52,7 +52,7 @@ const r1 = new Runner({
 	delay:{now:0,max:1000},
 	target: [p1]
 });
-r1.kill();
+//r1.kill();
 //--Shooter
 const s1 = new Shooter({
     color:'rgb(0,200,200)',
