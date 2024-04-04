@@ -68,7 +68,10 @@ class Runner extends Player {
 			}
 			
 			//Player Check collision
-			this.target.collided(this)
+			
+			this.allTargets.forEach((tgt) => {
+				tgt.collided(this)
+			});
 			super.update();
 		}
 	}
@@ -99,7 +102,7 @@ class Runner extends Player {
 			this.screen.ctx.lineTo(this.target.position.x, this.position.y);
 			this.screen.ctx.stroke();
 			this.screen.ctx.closePath();
-			posY = Math.abs(this.position.y-this.target.position.y);
+			posY = /*Math.abs*/(this.position.y-this.target.position.y);
 			this.screen.ctx.fillText(`${(posY)}`, this.target.position.x-this.size, this.position.y-this.size);
 			//Para x
 			this.screen.ctx.beginPath();
@@ -108,7 +111,7 @@ class Runner extends Player {
 			this.screen.ctx.lineTo(this.position.x, this.position.y);
 			this.screen.ctx.stroke();
 			this.screen.ctx.closePath();
-			posX = Math.abs(this.position.x-this.target.position.x);
+			posX = /*Math.abs*/(this.position.x-this.target.position.x);
 			this.screen.ctx.fillText(`${(posX)}`, this.target.position.x, this.position.y+this.size);
 		}
 	}

@@ -52,7 +52,7 @@ const r1 = new Runner({
 	delay:{now:0,max:1000},
 	target: [p1]
 });
-//r1.kill();
+r1.kill();
 //--Shooter
 const s1 = new Shooter({
     color:'rgb(0,200,200)',
@@ -62,7 +62,7 @@ const s1 = new Shooter({
     screen:{x:widthScreen, y:heightScreen, ctx: esc, tag:'enemy'},
 	delay:{now:0,max:1000},
 	target: [p1],
-	shot: {cooldown:200, draw:50, max:10}
+	shot: {cooldown:200 /*time to shot again*/, draw:50 /*time aiming*/, max:10 /*maxShots*/}
 });
 s1.kill();
 //--Bomb
@@ -74,7 +74,7 @@ const b1 = new Bomb({
     screen:{x:widthScreen, y:heightScreen, ctx: esc, tag:'enemy'},
 	delay:{now:0,max:1000},
 	target: [p1],
-	explosion: {range:5 /*how many times multiply SIZE*/, flash:500, end: 3000}
+	explosion: {range:5 /*how many times multiply SIZE*/, flash:500 /*initial flash interval*/, end: 3000 /*time to explode ms*/}
 });
 b1.kill();
 //--Teleporter
