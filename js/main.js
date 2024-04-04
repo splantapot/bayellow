@@ -53,7 +53,7 @@ const r1 = new Runner({
 	target: [p1]
 });
 r1.kill();
-
+//--Shooter
 const s1 = new Shooter({
     color:'rgb(0,200,200)',
     size:20,
@@ -65,7 +65,7 @@ const s1 = new Shooter({
 	shot: {cooldown:200, draw:50, max:10}
 });
 s1.kill();
-
+//--Bomb
 const b1 = new Bomb({
     color:'rgb(0,100,200)',
     size:20,
@@ -73,10 +73,22 @@ const b1 = new Bomb({
 	maxSpeed:5,
     screen:{x:widthScreen, y:heightScreen, ctx: esc, tag:'enemy'},
 	delay:{now:0,max:1000},
-	target: [p1, p2],
-	explosion: {range:5, flash:500, end: 3000}
+	target: [p1],
+	explosion: {range:5 /*how many times multiply SIZE*/, flash:500, end: 3000}
 });
-//b1.kill();
+b1.kill();
+//--Teleporter
+const t1 = new Teleporter({
+    color:'rgb(105,10,255)',
+    size:20,
+    position:{x:900, y:400},
+	maxSpeed:5,
+    screen:{x:widthScreen, y:heightScreen, ctx: esc, tag:'enemy'},
+	delay:{now:0,max:1000},
+	target: [p1],
+	teleport: {range: 16 /*how many times multiply SIZE*/, cooldown:5000 /*time in ms*/}
+});
+//t1.kill();
 
 requestAnimationFrame(fps);
 function fps() {
@@ -104,11 +116,14 @@ function fps() {
 	b1.targetLine(devMode);
 	b1.draw();
 	
+	t1.search(t.sDif);
+	t1.targetLine(devMode);
+	t1.draw();
+	
+	
 	//Update Player
     p1.control(inputs);
     p1.draw(esc);
-	p2.control(inputs);
-    p2.draw(esc);
 	
     document.getElementById('body').innerHTML = `BD:${Math.round(s1.shot.time/100)} || ${p1.isLive}`;
     document.getElementById('timer').innerHTML = `Timer:${Math.round((t.now)/100)}`;

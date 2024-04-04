@@ -45,7 +45,6 @@ class Bomb extends Runner {
 					});
 					this.kill();
 				}
-				newTarget.collided(this)
 			} else if (this.explosion.time > 0) {
 				this.explosion.time = 0;
 				this.explosion.flash = this.explosion.inicialFlash;
@@ -57,7 +56,7 @@ class Bomb extends Runner {
 
     search(time) {
 		this.runBomb(time);
-        super.search(time, !this.target);
+        super.search(time);
     }
 
     update() {
@@ -89,8 +88,6 @@ class Bomb extends Runner {
 				this.rightArm.draw(this.screen.ctx.fillStyle);
 				this.leftArm.draw(this.screen.ctx.fillStyle);
             }
-			
-			
 			
 			//this.screen.ctx.fillStyle = this.color;
             //this.screen.ctx.fillStyle = this.screen.ctx.fillStyle+'aa';

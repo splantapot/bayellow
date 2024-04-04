@@ -27,11 +27,8 @@ class Runner extends Player {
 		this.isLive = false;
 	}
 	
-	search(time, needSelect = true) {
+	search(time) {
 		//Select target
-		if (needSelect) {
-
-		}
 		this.selectTarget();
 		if (this.target != undefined && !this.target.isLive) {
 			this.allTargets.splice(this.allTargets.indexOf(this.target), 1);
@@ -75,13 +72,13 @@ class Runner extends Player {
 			}
 			
 			//Player Check collision
-			
-			this.update();
+			this.target.collided(this)
+			super.update();
 		}
 	}
 	
 	targetLine(deving) {
-		if (deving && this.isLive) {
+		if (this.isLive) {
 			let pos = 0, posX = 0, posY = 0, ang = 0;
 			this.screen.ctx.font = "15px Arial";
 			this.screen.ctx.textAlign = "center";

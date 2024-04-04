@@ -34,8 +34,11 @@ class Player {
 		this.isLive = true;
     }
 	
+	kill() {
+		this.isLive = false;
+	}
+	
 	collided(tgt, isBullet = false, updatePlayer = true) {
-		
 		if (this.isLive) {
 			if (isBullet) {
 				tgt.position = {
@@ -48,6 +51,9 @@ class Player {
 			const check = this.isCollided = tgt.isCollided = (distance < this.size+tgt.size);
 			if (updatePlayer) {
 				this.isLive = !this.isCollided;
+				if (!this.isLive) {
+					this.kill()
+				}
 			}
 			return check;
 		}
