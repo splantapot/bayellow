@@ -52,7 +52,7 @@ class Player {
 			if (updatePlayer) {
 				this.isLive = !this.isCollided;
 				if (!this.isLive) {
-					this.kill()
+					this.kill();
 				}
 			}
 			return check;

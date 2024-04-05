@@ -86,8 +86,9 @@ const t1 = new Teleporter({
     screen:{x:widthScreen, y:heightScreen, ctx: esc, tag:'enemy'},
 	delay:{now:0,max:1000},
 	target: [p1],
-	teleport: {range: 16 /*how many times multiply SIZE*/, timeToTp:3000 ,cooldown:5000 /*time in ms*/}
+	teleport: {range: 16 /*how many times multiply SIZE*/, timeToTp:500 ,cooldown:1000 /*time in ms*/}
 });
+
 //t1.kill();
 
 requestAnimationFrame(fps);
@@ -114,12 +115,11 @@ function fps() {
 	b1.draw(devMode);
 	
 	t1.search(t.sDif);
-	t1.draw(devMode);
-	
+	t1.draw(true);	
 	
 	//Update Player
     p1.control(inputs);
-    p1.draw(esc);
+    p1.draw();
 	
     document.getElementById('body').innerHTML = `BD:${Math.round(s1.shot.time/100)} || ${p1.isLive}`;
     document.getElementById('timer').innerHTML = `Timer:${Math.round((t.now)/100)}`;

@@ -77,16 +77,33 @@ class Runner extends Player {
 	}
 	
 	draw(devMode) {
-		super.draw();
-		
 		this.targetLine(devMode);
+		super.draw();
 	}
 	
-	targetLine(deving) {
-		if (this.isLive) {
-			let pos = 0, posX = 0, posY = 0, ang = 0;
+	targetLine(devMode) {
+		
+		if (devMode) {
+			let pos = 0, posX = 0, posY = 0;
 			this.screen.ctx.font = "15px Arial";
 			this.screen.ctx.textAlign = "center";
+			//Linha reta
+			pos = distancePoints(this.position.x, this.position.y, this.target.position.x, this.target.position.y);
+			pos = Math.round(pos);
+			this.screen.ctx.beginPath();
+			this.screen.ctx.moveTo(this.position.x, this.position.y);
+			this.screen.ctx.strokeStyle = this.screen.ctx.fillStyle = 'rgb(255,100,255)';
+			this.screen.ctx.lineTo(this.target.position.x, this.target.position.y);
+			this.screen.ctx.stroke();
+			this.screen.ctx.closePath();
+		}
+		
+		if (devMode && this.isLive) {
+			/*let pos = 0, posX = 0, posY = 0, ang = 0;
+			this.screen.ctx.font = "15px Arial";
+			this.screen.ctx.textAlign = "center";this.screen.ctx.font = "15px Arial";
+			this.screen.ctx.textAlign = "center";
+			//Linha reta
 			//Em linha reta
 			this.screen.ctx.beginPath();
 			this.screen.ctx.moveTo(this.position.x, this.position.y);
@@ -108,17 +125,17 @@ class Runner extends Player {
 			this.screen.ctx.lineTo(this.target.position.x, this.position.y);
 			this.screen.ctx.stroke();
 			this.screen.ctx.closePath();
-			posY = /*Math.abs*/(this.position.y-this.target.position.y);
+			posY = (this.position.y-this.target.position.y);
 			this.screen.ctx.fillText(`${(posY)}`, this.target.position.x-this.size, this.position.y-this.size);
 			//Para x
 			this.screen.ctx.beginPath();
-			this.screen.ctx.strokeStyle = this.screen.ctx.fillStyle = 'rgb(0,150,255)';
+			this.screen.ctx.strokeStyle = 'rgb(0,150,255)';
 			this.screen.ctx.moveTo(this.target.position.x, this.position.y);
 			this.screen.ctx.lineTo(this.position.x, this.position.y);
 			this.screen.ctx.stroke();
 			this.screen.ctx.closePath();
-			posX = /*Math.abs*/(this.position.x-this.target.position.x);
-			this.screen.ctx.fillText(`${(posX)}`, this.target.position.x, this.position.y+this.size);
+			posX = (this.position.x-this.target.position.x);
+			this.screen.ctx.fillText(`${(posX)}`, this.target.position.x, this.position.y+this.size);*/
 		}
 	}
 }
