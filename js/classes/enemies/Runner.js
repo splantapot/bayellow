@@ -76,6 +76,12 @@ class Runner extends Player {
 		}
 	}
 	
+	draw(devMode) {
+		super.draw();
+		
+		this.targetLine(devMode);
+	}
+	
 	targetLine(deving) {
 		if (this.isLive) {
 			let pos = 0, posX = 0, posY = 0, ang = 0;

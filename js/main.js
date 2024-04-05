@@ -86,7 +86,7 @@ const t1 = new Teleporter({
     screen:{x:widthScreen, y:heightScreen, ctx: esc, tag:'enemy'},
 	delay:{now:0,max:1000},
 	target: [p1],
-	teleport: {range: 16 /*how many times multiply SIZE*/, cooldown:5000 /*time in ms*/}
+	teleport: {range: 16 /*how many times multiply SIZE*/, timeToTp:3000 ,cooldown:5000 /*time in ms*/}
 });
 //t1.kill();
 
@@ -105,20 +105,16 @@ function fps() {
 	
 	//Update enemies 
 	r1.search(t.sDif);
-	r1.targetLine(devMode);
-	r1.draw();
+	r1.draw(devMode);
 	
 	s1.search(t.sDif);
-	s1.targetLine(devMode);
-	s1.draw();
+	s1.draw(devMode);
 
     b1.search(t.sDif);
-	b1.targetLine(devMode);
-	b1.draw();
+	b1.draw(devMode);
 	
 	t1.search(t.sDif);
-	t1.targetLine(devMode);
-	t1.draw();
+	t1.draw(devMode);
 	
 	
 	//Update Player
