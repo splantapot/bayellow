@@ -66,7 +66,7 @@ class Teleporter extends Runner {
 	search(time) {
 		this.runTeleport(time);
 		
-		if (this.teleport.cooldownTime > this.teleport.cooldown**0.9) {
+		if (this.teleport.cooldownTime > this.teleport.cooldown**0.9 && this.isLive) {
 			this.allTargets.forEach((tgt) => {
 				tgt.collided(this);
 			});

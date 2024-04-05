@@ -81,15 +81,14 @@ b1.kill();
 const t1 = new Teleporter({
     color:'rgb(105,10,255)',
     size:20,
-    position:{x:900, y:400},
+    position:{x:900, y:350},
 	maxSpeed:5,
     screen:{x:widthScreen, y:heightScreen, ctx: esc, tag:'enemy'},
 	delay:{now:0,max:1000},
 	target: [p1],
 	teleport: {range: 16 /*how many times multiply SIZE*/, timeToTp:500 ,cooldown:1000 /*time in ms*/}
 });
-
-//t1.kill();
+t1.kill();
 
 requestAnimationFrame(fps);
 function fps() {
